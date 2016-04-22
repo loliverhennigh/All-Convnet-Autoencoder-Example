@@ -1,11 +1,14 @@
 
 
-import input_data
-mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
+#import input_data
+#mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
+import cannon as cn
 
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt 
+
+k = cn.Cannon()
 
 def weight_variable(shape):
   initial = tf.truncated_normal(shape, stddev=0.1)
@@ -104,19 +107,16 @@ train_step = tf.train.AdamOptimizer(1e-4).minimize(error) # I made the learning 
 accuracy = tf.nn.l2_loss(y_ - y_conv)
 sess.run(tf.initialize_all_variables())
 for i in range(20000):
-  batch = mnist.train.next_batch(50)
+  x_input, y_input = k.generate_28x28(1,50)
   if i%20 == 0:
     train_accuracy = accuracy.eval(feed_dict={
-        x:batch[0], y_: batch[0], keep_prob: 1.0})
+        x:x_input[0], y_:x_input[0], keep_prob: 1.0})
     print("step %d, training accuracy %g"%(i, train_accuracy))
     print("Saving test image to new_run_1.png")
-    new_im = y_conv.eval(feed_dict={x: mnist.test.images[4:5], y_: mnist.test.images[0:1], keep_prob: 1.0})
+    new_im = y_conv.eval(feed_dict={x: x_input[0,10:11], y_: x_input[0,10:11], keep_prob: 1.0})
     plt.imshow(new_im.reshape((28,28)))
     plt.savefig('new_run_1.png')
     print("Saved")
-  train_step.run(feed_dict={x: batch[0], y_: batch[0], keep_prob: .8})
-
-print("test accuracy %g"%accuracy.eval(feed_dict={
-    x: mnist.test.images, y_: mnist.test.images, keep_prob: 1.0}))
+  train_step.run(feed_dict={x: x_input[0], y_: x_input[0], keep_prob: 1.0})
 
 
