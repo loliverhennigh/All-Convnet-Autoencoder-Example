@@ -7,8 +7,6 @@ import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt 
 
-k = cn.Cannon()
-
 def weight_variable(shape):
   initial = tf.truncated_normal(shape, stddev=0.1)
   return tf.Variable(initial)
@@ -112,10 +110,10 @@ for i in range(20000):
         x:batch[0], y_:batch[0], keep_prob: 1.0})
     print("step %d, training accuracy %g"%(i, train_accuracy))
     print("Saving test image to new_run_1.png")
-    new_im = y_conv.eval(feed_dict={x: batch[0,10:11], y_: batch[0,10:11], keep_prob: 1.0})
-    plt.imshow(new_im.reshape((28,28)))
+    new_im = y_conv.eval(feed_dict={x: batch[0], y_: batch[0], keep_prob: 1.0})
+    plt.imshow(new_im[1].reshape((28,28)))
     plt.savefig('new_run_1.png')
     print("Saved")
-  train_step.run(feed_dict={x: x_input[0], y_: x_input[0], keep_prob: 0.8})
+  train_step.run(feed_dict={x: batch[0], y_: batch[0], keep_prob: 0.8})
 
 
